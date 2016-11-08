@@ -1,4 +1,3 @@
-var assert = require('assert');
 var http = require('http');
 var request = require('supertest');
 var gatewayBodyParser = require('..');
