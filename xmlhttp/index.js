@@ -20,7 +20,7 @@ var parseString = require('xml2js').parseString,
 
 module.exports = function(opts) {
     return function (req, res, next) {
-        var options = {
+        var xmloptions = {
                 async: true,
                 explicitArray: false,
                 normalize: true,
@@ -29,18 +29,23 @@ module.exports = function(opts) {
             };
 
         var data = '';
+        opts = opts || {};
 
-        if (req._body) {
+        if (!opts.gatewayBody && req._body) {
             return next();
         }
 
-        req.body = req.body || {};
+        if (!opts.gatewayBody)
+            req.body = req.body || {};
+        else
+            req.gateway = req.gateway || {};
 
         if (!utils.hasBody(req) || !exports.xmlhttpregexp.test(utils.mime(req)) || !utils.messageType(req)) {
             return next();
         }
 
-        req._body = true;
+        if (!opts.gatewayBody)
+            req._body = true;
 
         req.setEncoding('utf-8');
         req.on('data', function (chunk) {
@@ -48,7 +53,7 @@ module.exports = function(opts) {
         });
 
         req.on('end', function () {
-            parseString(data, options, function (err, xml) {
+            parseString(data, xmloptions, function (err, xml) {
                 var type = utils.messageType(req); 
                 if (err) {
                     err.status = 400;
@@ -58,7 +63,11 @@ module.exports = function(opts) {
                     type: type,
                     data: utils.transform[type](xml)
                 }
-                req.body = bodycontent;
+                if (!opts.gatewayBody)
+                    req.body = bodycontent;
+                else
+                    req.gateway = bodycontent;
+
                 req.rawBody = data;
                 next();
             });

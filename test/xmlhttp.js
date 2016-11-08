@@ -58,6 +58,14 @@ describe('gatewayBodyParser.xmlhttp', function() {
     .expect(200, '{"type":"dr","data":[{"sequenceId":"1","reference":"123456-1234-1234-1234-12345678","receiver":"4700000000","state":"DELIVRD","timestamp":"2016-11-08 15:12:00"}]}', done);
   })
 
+  it('should allow deserialization to req.gateway', function(done) {
+    request(createServer({ gatewayBody: true }))
+    .post('/')
+    .set('Content-Type', 'application/xml')
+    .set('PSW-Message-type', 'MO')
+    .send('<MSGLST><MSG><ID>1</ID><SND>4700000000</SND><RCV>01337</RCV><TEXT>Some text</TEXT></MSG></MSGLST>')
+    .expect(200, '{"type":"mo","data":[{"sequenceId":"1","receiver":"01337","sender":"4700000000","text":"Some text"}]}', done);
+  })
 })
 
 
@@ -75,11 +83,15 @@ function createServer (opts) {
   var _gatewayBodyParser = typeof opts !== 'function'
     ? gatewayBodyParser.xmlhttp(opts)
     : opts
+  opts = opts || {};
 
   return http.createServer(function (req, res) {
     _gatewayBodyParser(req, res, function (err) {
-      res.statusCode = err ? (err.status || 500) : 200
-      res.end(err ? err.message : JSON.stringify(req.body))
+      res.statusCode = err ? (err.status || 500) : 200;
+      if (!opts.gatewayBody)
+        res.end(err ? err.message : JSON.stringify(req.body));
+      else
+        res.end(err ? err.message : JSON.stringify(req.gateway));
     })
   })
 }
