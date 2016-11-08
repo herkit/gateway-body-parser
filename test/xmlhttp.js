@@ -73,7 +73,7 @@ function allocBuffer (size, fill) {
 
 function createServer (opts) {
   var _gatewayBodyParser = typeof opts !== 'function'
-    ? gatewayBodyParser.xmlhttp
+    ? gatewayBodyParser.xmlhttp(opts)
     : opts
 
   return http.createServer(function (req, res) {

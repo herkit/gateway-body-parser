@@ -17,8 +17,9 @@ var parseString = require('xml2js').parseString,
         },
         transform: require('./transform')
    };
-   
-module.exports = function (req, res, next) {
+
+module.exports = function(opts) {
+    return function (req, res, next) {
         var options = {
                 async: true,
                 explicitArray: false,
@@ -63,5 +64,6 @@ module.exports = function (req, res, next) {
             });
         });
     }
+}
 
 exports.xmlhttpregexp = /^(application\/([\w!#\$%&\*`\-\.\^~]+\+)?xml)$/i;
