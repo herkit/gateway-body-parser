@@ -14,10 +14,11 @@ module.exports = function(xml) {
             var pos = msg.position;
 
             if (pos.status === "OK") {
+                pos = pos.pos;
                 out.position = {
                     lng: parseFloat(pos.longitude.replace(',', '.')),
                     lat: parseFloat(pos.latitude.replace(',', '.')),
-                    radius: parseInt(pos.radius),
+                    radius: pos.radius ? parseInt(pos.radius) : -1,
                     council: pos.council,
                     councilNumber: pos.councilnumber,
                     place: pos.place,
@@ -25,16 +26,16 @@ module.exports = function(xml) {
                     zipCode: pos.zipcode,
                     city: pos.city
                 };
+
             }
         }
 
         if (msg.metadata) {
             var meta = !Array.isArray(msg.metadata.data) ? [msg.metadata.data] : msg.metadata.data;
-            out.metadata = meta.map(function(data) {
-                var item = {};
-                item[data.key.toLower()] = data.value;
-                return item;
-            })
+            out.metadata = meta.reduce(function(data, item) {
+                data[item.$.KEY.toLowerCase()] = item.$.VALUE;
+                return data;
+            }, {})
         }
 
         return out;
