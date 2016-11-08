@@ -1,0 +1,14 @@
+{
+  "name": "gateway-body-parser",
+  "version": "0.1.0",
+  "description": "A connect body parser that parses MOs and DRs from LINK Mobility Gateway",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "xml2js": "^0.4.17"
+  }
+}
