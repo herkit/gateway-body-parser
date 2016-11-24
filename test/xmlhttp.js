@@ -9,7 +9,7 @@ describe('gatewayBodyParser.xmlhttp', function() {
     .set('Content-Type', 'application/xml')
     .set('PSW-Message-type', 'MO')
     .send('<MSGLST><MSG><ID>1</ID><SND>4700000000</SND><RCV>01337</RCV><TEXT>Some text</TEXT></MSG></MSGLST>')
-    .expect(200, '{"type":"mo","data":[{"sequenceId":"1","receiver":"01337","sender":"4700000000","text":"Some text","isStored":false}]}', done);
+    .expect(200, '{"type":"mo","data":[{"sequenceId":"1","receiver":"01337","sender":"4700000000","text":"Some text","isOk":false}]}', done);
   })
 
   it('should parse position', function(done) {
@@ -18,7 +18,7 @@ describe('gatewayBodyParser.xmlhttp', function() {
     .set('Content-Type', 'application/xml')
     .set('PSW-Message-type', 'MO')
     .send('<MSGLST><MSG><ID>1</ID><SND>4700000000</SND><RCV>01337</RCV><TEXT>Some text</TEXT><POSITION><STATUS>OK</STATUS><POS><LONGITUDE>60,12345</LONGITUDE><LATITUDE>-5,23245</LATITUDE><RADIUS>2</RADIUS><COUNCIL>Bergen</COUNCIL><COUNCILNUMBER>1501</COUNCILNUMBER><PLACE>Bergen</PLACE></POS></POSITION></MSG></MSGLST>')
-    .expect(200, '{"type":"mo","data":[{"sequenceId":"1","receiver":"01337","sender":"4700000000","text":"Some text","isStored":false,"position":{"lng":60.12345,"lat":-5.23245,"radius":2,"council":"Bergen","councilNumber":"1501","place":"Bergen"}}]}', done);
+    .expect(200, '{"type":"mo","data":[{"sequenceId":"1","receiver":"01337","sender":"4700000000","text":"Some text","isOk":false,"position":{"lng":60.12345,"lat":-5.23245,"radius":2,"council":"Bergen","councilNumber":"1501","place":"Bergen"}}]}', done);
   })
 
   it('missing radius should return -1', function(done) {
@@ -27,7 +27,7 @@ describe('gatewayBodyParser.xmlhttp', function() {
     .set('Content-Type', 'application/xml')
     .set('PSW-Message-type', 'MO')
     .send('<MSGLST><MSG><ID>1</ID><SND>4700000000</SND><RCV>01337</RCV><TEXT>Some text</TEXT><POSITION><STATUS>OK</STATUS><POS><LONGITUDE>60,12345</LONGITUDE><LATITUDE>-5,23245</LATITUDE></POS></POSITION></MSG></MSGLST>')
-    .expect(200, '{"type":"mo","data":[{"sequenceId":"1","receiver":"01337","sender":"4700000000","text":"Some text","isStored":false,"position":{"lng":60.12345,"lat":-5.23245,"radius":-1}}]}', done);
+    .expect(200, '{"type":"mo","data":[{"sequenceId":"1","receiver":"01337","sender":"4700000000","text":"Some text","isOk":false,"position":{"lng":60.12345,"lat":-5.23245,"radius":-1}}]}', done);
   })
 
   it('should parse metadata', function(done) {
@@ -36,7 +36,7 @@ describe('gatewayBodyParser.xmlhttp', function() {
     .set('Content-Type', 'application/xml')
     .set('PSW-Message-type', 'MO')
     .send('<MSGLST><MSG><ID>1</ID><SND>4700000000</SND><RCV>01337</RCV><TEXT>Some text</TEXT><METADATA><DATA KEY="TIMESTAMP" VALUE="2016-11-08 12:00:00"/></METADATA></MSG></MSGLST>')
-    .expect(200, '{"type":"mo","data":[{"sequenceId":"1","receiver":"01337","sender":"4700000000","text":"Some text","isStored":false,"metadata":{"timestamp":"2016-11-08 12:00:00"}}]}', done);
+    .expect(200, '{"type":"mo","data":[{"sequenceId":"1","receiver":"01337","sender":"4700000000","text":"Some text","isOk":false,"metadata":{"timestamp":"2016-11-08 12:00:00"}}]}', done);
   })
 
 
@@ -46,7 +46,7 @@ describe('gatewayBodyParser.xmlhttp', function() {
     .set('Content-Type', 'application/xml')
     .set('PSW-Message-type', 'DR')
     .send('<MSGLST><MSG><ID>1</ID><REF>123456-1234-1234-1234-12345678</REF><RCV>4700000000</RCV><STATE>DELIVRD</STATE></MSG></MSGLST>')
-    .expect(200, '{"type":"dr","data":[{"sequenceId":"1","reference":"123456-1234-1234-1234-12345678","receiver":"4700000000","state":"DELIVRD"}]}', done);
+    .expect(200, '{"type":"dr","data":[{"sequenceId":"1","reference":"123456-1234-1234-1234-12345678","receiver":"4700000000","state":"DELIVRD","isOk":false}]}', done);
   })
 
   it('should parse deliveryreport with deliverytime', function(done) {
@@ -55,7 +55,7 @@ describe('gatewayBodyParser.xmlhttp', function() {
     .set('Content-Type', 'application/xml')
     .set('PSW-Message-type', 'DR')
     .send('<MSGLST><MSG><ID>1</ID><REF>123456-1234-1234-1234-12345678</REF><RCV>4700000000</RCV><STATE>DELIVRD</STATE><DELIVERYTIME>2016-11-08 15:12:00</DELIVERYTIME></MSG></MSGLST>')
-    .expect(200, '{"type":"dr","data":[{"sequenceId":"1","reference":"123456-1234-1234-1234-12345678","receiver":"4700000000","state":"DELIVRD","timestamp":"2016-11-08 15:12:00"}]}', done);
+    .expect(200, '{"type":"dr","data":[{"sequenceId":"1","reference":"123456-1234-1234-1234-12345678","receiver":"4700000000","state":"DELIVRD","isOk":false,"timestamp":"2016-11-08 15:12:00"}]}', done);
   })
 
   it('should allow deserialization to req.gateway', function(done) {
@@ -64,13 +64,13 @@ describe('gatewayBodyParser.xmlhttp', function() {
     .set('Content-Type', 'application/xml')
     .set('PSW-Message-type', 'MO')
     .send('<MSGLST><MSG><ID>1</ID><SND>4700000000</SND><RCV>01337</RCV><TEXT>Some text</TEXT></MSG></MSGLST>')
-    .expect(200, '{"type":"mo","data":[{"sequenceId":"1","receiver":"01337","sender":"4700000000","text":"Some text","isStored":false}]}', done);
+    .expect(200, '{"type":"mo","data":[{"sequenceId":"1","receiver":"01337","sender":"4700000000","text":"Some text","isOk":false}]}', done);
   })
 
-  it('should create proper ok reply', function(done) {
+  it('should create proper ok mo reply', function(done) {
     request(createReplyingServer({ gatewayBody: true }, 
       function(req) {
-        req.gateway.data.forEach(function(message) { message.isStored = true; });
+        req.gateway.data.forEach(function(message) { message.isOk = true; });
       }))
     .post('/')
     .set('Content-Type', 'application/xml')
@@ -79,10 +79,34 @@ describe('gatewayBodyParser.xmlhttp', function() {
     .expect(200, '<MSGLST><MSG><ID>1</ID><STATUS>OK</STATUS></MSG></MSGLST>', done);
   })
 
-  it('should create proper fail reply', function(done) {
+  it('should create proper fail mo reply', function(done) {
     request(createReplyingServer({ gatewayBody: true }, 
       function(req) {
-        req.gateway.data.forEach(function(message) { message.isStored = false; });
+        req.gateway.data.forEach(function(message) { message.isOk = false; });
+      }))
+    .post('/')
+    .set('Content-Type', 'application/xml')
+    .set('PSW-Message-type', 'DR')
+    .send('<MSGLST><MSG><ID>1</ID><REF>123456-1234-1234-1234-12345678</REF><RCV>4700000000</RCV><STATE>DELIVRD</STATE></MSG></MSGLST>')
+    .expect(200, '<MSGLST><MSG><ID>1</ID><STATUS>FAIL</STATUS></MSG></MSGLST>', done);
+  })
+
+  it('should create proper ok dr reply', function(done) {
+    request(createReplyingServer({ gatewayBody: true }, 
+      function(req) {
+        req.gateway.data.forEach(function(message) { message.isOk = true; });
+      }))
+    .post('/')
+    .set('Content-Type', 'application/xml')
+    .set('PSW-Message-type', 'DR')
+    .send('<MSGLST><MSG><ID>1</ID><REF>123456-1234-1234-1234-12345678</REF><RCV>4700000000</RCV><STATE>DELIVRD</STATE></MSG></MSGLST>')
+    .expect(200, '<MSGLST><MSG><ID>1</ID><STATUS>OK</STATUS></MSG></MSGLST>', done);
+  })
+
+  it('should create proper fail dr reply', function(done) {
+    request(createReplyingServer({ gatewayBody: true }, 
+      function(req) {
+        req.gateway.data.forEach(function(message) { message.isOk = false; });
       }))
     .post('/')
     .set('Content-Type', 'application/xml')

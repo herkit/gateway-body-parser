@@ -6,7 +6,7 @@ module.exports = function(xml) {
             receiver: msg.rcv,
             sender: msg.snd,
             text: msg.text,
-            isStored: false
+            isOk: false
         };
 
         if (msg.address) out.address = msg.address;

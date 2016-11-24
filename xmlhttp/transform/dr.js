@@ -5,7 +5,8 @@ module.exports = function(xml) {
             sequenceId: msg.id,
             reference: msg.ref,
             receiver: msg.rcv,
-            state: msg.state
+            state: msg.state,
+            isOk: false
         };
 
         if (msg.deliverytime) out.timestamp = msg.deliverytime;
