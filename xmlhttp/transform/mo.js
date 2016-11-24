@@ -5,7 +5,8 @@ module.exports = function(xml) {
             sequenceId: msg.id,
             receiver: msg.rcv,
             sender: msg.snd,
-            text: msg.text
+            text: msg.text,
+            isStored: false
         };
 
         if (msg.address) out.address = msg.address;

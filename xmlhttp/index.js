@@ -15,7 +15,8 @@ var parseString = require('xml2js').parseString,
                 return req.headers['psw-message-type'].toLowerCase();
             return undefined;
         },
-        transform: require('./transform')
+        transform: require('./transform'),
+        reply: require('./reply')
    };
 
 module.exports = function(opts) {
@@ -63,10 +64,19 @@ module.exports = function(opts) {
                     type: type,
                     data: utils.transform[type](xml)
                 }
-                if (!opts.gatewayBody)
+                if (!opts.gatewayBody) {
                     req.body = bodycontent;
+                    res.gatewayResponse = function() {
+                        utils.reply[type](res, req.body);
+                    }
+                }
                 else
+                {
                     req.gateway = bodycontent;
+                    res.gatewayResponse = function() {
+                        utils.reply[type](res, req.gateway);
+                    }
+                }
 
                 req.rawBody = data;
                 next();
@@ -75,4 +85,4 @@ module.exports = function(opts) {
     }
 }
 
-exports.xmlhttpregexp = /^(application\/([\w!#\$%&\*`\-\.\^~]+\+)?xml)$/i;
+exports.xmlhttpregexp = /^(application\/xml)$/i;
